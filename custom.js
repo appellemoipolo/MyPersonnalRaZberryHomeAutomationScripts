@@ -150,6 +150,7 @@ function MySwitchAllLightActivator(pDeviceId, pToggler, pLights) {
 				console.log('pLights[' + i + '].data.level.value = ' + currentLigthValue)
 
 				if ((pToggler && currentLigthValue == 0) || 
+					(pToggler && currentLigthValue > 0 && currentLigthValue != maxDimmingValue) || 
 					(!pToggler && currentLigthValue > 0)) {
 					lightsToSwitch.push(pLights[i]);
 				}
