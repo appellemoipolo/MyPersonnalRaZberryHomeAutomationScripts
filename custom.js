@@ -3,8 +3,9 @@ console.log("Custom code executed !!!");
 // Custom methods
 
 var listening = true;
-var timer = 1000;
-var maxDimmingValue = 30;
+var timer = 500;
+var maxDimmingValue = 30; // Max 99%
+var dimmingDuration = 128; // Max 255s
 
 var lightsToSwitchOn = [ 
  "devices[18].instances[0]", 
@@ -18,6 +19,7 @@ var lightsToSwitchOn = [
 // "devices[9].instances[5]", 
 // "devices[9].instances[2]", 
  "devices[7].instances[0]",
+ "devices[15].instances[1]",
  "devices[15].instances[2]" ]; 
 
 var lightsToSwitchOff = [ 
@@ -33,6 +35,7 @@ var lightsToSwitchOff = [
  "devices[16].instances[0]", 
  "devices[17].instances[0]", 
  "devices[18].instances[0]", 
+ "devices[15].instances[1]",
  "devices[15].instances[2]" ];
 
 
@@ -115,7 +118,7 @@ function MyZwaveSwitchValue(pLight, pToggler) {
 		eval('zway.' + pLight + '.SwitchBinary.Set(' + newValue + ')');
 	} else if  (lightType == 17) {
 		console.log("zway." + pLight + ".SwitchMultilevel.Set(" + newValue + ")");
-		eval('zway.' + pLight + '.SwitchMultilevel.Set(' + newValue + ')');
+		eval('zway.' + pLight + '.SwitchMultilevel.Set(' + newValue + ', ' + dimmingDuration + ')');
 	}
 }
 
