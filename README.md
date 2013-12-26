@@ -1,5 +1,4 @@
 <h1>MyPersonnalRaZberryHomeAutomationScripts</h1>
-<hr />
 
 <p>My custom needs in the RaZberry home automation system</p>
 
