@@ -39,6 +39,7 @@ var lightsToSwitchOff = [
  "devices[15].instances[2]" ];
 
 
+
 /*
 
 var deviceState = false;
