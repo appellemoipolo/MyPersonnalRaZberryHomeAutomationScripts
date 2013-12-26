@@ -9,6 +9,8 @@ var dimmingDuration = 128; // Max 255s
 
 var lightsToSwitchOn = [ 
  "devices[18].instances[0]", 
+ "devices[30].instances[0]",
+ "devices[28].instances[0]",
  "devices[17].instances[0]", 
  "devices[16].instances[0]", 
  "devices[5].instances[0]", 
@@ -20,7 +22,7 @@ var lightsToSwitchOn = [
 // "devices[9].instances[2]", 
  "devices[7].instances[0]",
  "devices[15].instances[1]",
- "devices[15].instances[2]" ]; 
+ "devices[15].instances[2]"]; 
 
 var lightsToSwitchOff = [ 
  "devices[20].instances[0]", 
@@ -35,6 +37,8 @@ var lightsToSwitchOff = [
  "devices[16].instances[0]", 
  "devices[17].instances[0]", 
  "devices[18].instances[0]", 
+ "devices[28].instances[0]",
+ "devices[30].instances[0]",
  "devices[15].instances[1]",
  "devices[15].instances[2]" ];
 
