@@ -52,10 +52,10 @@ HAC01Switch.prototype.init = function (config) {
 	var firstMap = this.map[0];
 
 	// Prendre en compte ces variables ! Essayer de faire un HAC01Witch.timer par exemple ? mais pour l'instance courante
-	var timer = firstMap.timerBetweenDeviceChangingState;
-	var maxDimmingValue = firstMap.devicesLevelValueIfTypeIsDimmer; // Max 99%
-	var dimmingDuration = firstMap.devicesDimmingDuration; // Max 255s
-	var logLevel = firstMap.logLevel;
+	HAC01Switch.timer = firstMap.timerBetweenDeviceChangingState;
+	HAC01Switch.maxDimmingValue = firstMap.devicesLevelValueIfTypeIsDimmer; // Max 99%
+	HAC01Switch.dimmingDuration = firstMap.devicesDimmingDuration; // Max 255s
+	HAC01Switch.debugLevel = firstMap.debugLevel;
 
 	HAC01SwitchMySwitchAllLightActivator(firstMap.commandDevice, firstMap.commandToRun, firstMap.devicesToControl);
 };
@@ -70,7 +70,7 @@ var listening = true;
 
 
 function HAC01SwitchMySwitchAllLightActivator(__deviceId, __toggler, __lights) {
-	if (__lights) {
+	if (__toggler) {
 		LogInfo("Binding HAC01 device " + __deviceId + " to switch {" + __lights + "} on");
 	} else {
 		LogInfo("Binding HAC01 device " + __deviceId + " to switch {" + __lights + "} off");
@@ -79,6 +79,19 @@ function HAC01SwitchMySwitchAllLightActivator(__deviceId, __toggler, __lights) {
 	zway.devices[__deviceId].data.lastReceived.bind(function() {
 
 		var isOnlyAnUpdate = true;
+
+
+
+
+
+
+		// Revoir cette partie qui test quoi faire
+
+
+
+
+
+
 
 		LogDebug("Check device " + __deviceId + " command class SWITCH_BINARY level:");
 		LogDebug("zway.devices[" + __deviceId + "].instances[0].commandClasses[37].data.level.value = " + zway.devices[__deviceId].instances[0].commandClasses[37].data.level.value);
@@ -102,6 +115,14 @@ function HAC01SwitchMySwitchAllLightActivator(__deviceId, __toggler, __lights) {
 				var lightsToSwitch = new Array();
 
 				LogDebug("Creating lights list to update...");
+				
+
+
+
+				// Controler l'existance du module à traiter !
+
+
+
 
 				for (var i = 0; i < __lights.length; i++) {
 					var lightType = eval('zway.' + __lights[i] + '.data.genericType.value');
@@ -117,12 +138,14 @@ function HAC01SwitchMySwitchAllLightActivator(__deviceId, __toggler, __lights) {
 						(__toggler && currentLigthValue > 0 && currentLigthValue != maxDimmingValue) || 
 						(!__toggler && currentLigthValue > 0)) {
 						lightsToSwitch.push(__lights[i]);
-						LogDebug('__lights[' + i + '] with value ' + currentLigthValue + " added to lights list");
+						LogDebug(__lights[i] + ' with value ' + currentLigthValue + " added to lights list");
 					} else {
-						LogDebug('__lights[' + i + '] with value ' + currentLigthValue + " not added to lights list");
+						LogDebug(__lights[i] + ' with value ' + currentLigthValue + " not added to lights list");
 					}
 				}
 				
+				LogInfo("Lights to update: " + lightsToSwitch);
+
 				HAC01SwitchMySwitchAllLights(__toggler, lightsToSwitch);
 				
 				listening = false;
@@ -140,6 +163,8 @@ function HAC01SwitchMySwitchAllLightActivator(__deviceId, __toggler, __lights) {
 
 
 function HAC01SwitchMySwitchAllLights(__toggler, __lights) {
+	LogDebug("HAC01SwitchMySwitchAllLights")
+
 	for(var i = 0; i < __lights.length; i++) {
 		HAC01SwitchMySwitchAllLightsTimer(i, __toggler, __lights);
 	}
@@ -147,16 +172,20 @@ function HAC01SwitchMySwitchAllLights(__toggler, __lights) {
 
 
 function HAC01SwitchMySwitchAllLightsTimer(__counter, __toggler, __lights) {
+	LogDebug("HAC01SwitchMySwitchAllLightsTimer: Device " + __lights[__counter]);
+
 	setTimeout(function() {
 		HAC01SwitchMyZwaveSwitchValue(__lights[__counter], __toggler);
 	}, timer + timer * __counter);
 }
 
 
-function HAC01SwitchMyZwaveSwitchValue(pLight, __toggler) {
+function HAC01SwitchMyZwaveSwitchValue(__light, __toggler) {
+	LogDebug("HAC01SwitchMyZwaveSwitchValue(" + __light, + ", " + __toggler + ")");
+
 	var newValue = 0;
-	
-	var lightType = eval('zway.' + pLight + '.data.genericType.value');
+
+	var lightType = eval('zway.' + __light + '.data.genericType.value');
 
 	if (__toggler) {
 		if (lightType == 16) {
@@ -165,19 +194,19 @@ function HAC01SwitchMyZwaveSwitchValue(pLight, __toggler) {
 			newValue = maxDimmingValue;
 		}
 	}
-	
+
 	if (lightType == 16) {
-		eval('zway.' + pLight + '.SwitchBinary.Set(' + newValue + ')');
+		eval('zway.' + __light + '.SwitchBinary.Set(' + newValue + ')');
 	} else if  (lightType == 17) {
-		eval('zway.' + pLight + '.SwitchMultilevel.Set(' + newValue + ', ' + dimmingDuration + ')');
+		eval('zway.' + __light + '.SwitchMultilevel.Set(' + newValue + ', ' + dimmingDuration + ')');
 	}
 
-	LogInfo("Device " + pLight + " value updating to " + newValue + "...");
+	LogInfo("Device " + __light + " value updating to " + newValue + "...");
 }
 
 function LogDebug(__message) {
-	if  (logLevel >= 1) {
-		console.log("HAC01Switch module debug log: " + __message);
+	if  (HAC01Switch.debugLevel) {
+		console.log("HAC01Switch module log debug: " + __message);
 	}
 }
 
