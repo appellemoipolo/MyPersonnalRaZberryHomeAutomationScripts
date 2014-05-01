@@ -1,19 +1,19 @@
-console.log("Custom code executed !!!");
+console.log("Custom code executed!");
 
 // Custom methods
 
 var listening = true;
-var timer = 500;
+var timer = 1500;
 var maxDimmingValue = 30; // Max 99%
 var dimmingDuration = 128; // Max 255s
 
 var lightsToSwitchOn = [ 
  "devices[18].instances[0]", 
-// "devices[30].instances[0]",
- "devices[28].instances[0]",
+ "devices[30].instances[0]",
+// "devices[28].instances[0]",
  "devices[17].instances[0]", 
  "devices[16].instances[0]", 
- "devices[5].instances[0]", 
+ "devices[43].instances[0]", 
  "devices[6].instances[0]", 
  "devices[9].instances[1]",
 // "devices[9].instances[3]", 
@@ -33,12 +33,12 @@ var lightsToSwitchOff = [
 // "devices[9].instances[4]", 
 // "devices[9].instances[3]", 
  "devices[6].instances[0]", 
- "devices[5].instances[0]", 
+ "devices[43].instances[0]", 
  "devices[16].instances[0]", 
  "devices[17].instances[0]", 
  "devices[18].instances[0]", 
- "devices[28].instances[0]",
-// "devices[30].instances[0]",
+// "devices[28].instances[0]",
+ "devices[30].instances[0]",
  "devices[15].instances[1]",
  "devices[15].instances[2]" ];
 
@@ -90,6 +90,13 @@ function MyHAC01SwitchToggler(pDeviceId, pLights) {
 
 function MySwitchAllLights(pToggler, pLights) {
 	console.log("MySwitchAllLights(" + pToggler + ", " + pLights + ")");
+
+	if (pToggler) {
+		system("curl http://localhost:5005/Salon/volume/12");
+		system("curl http://localhost:5005/Salon/play");
+	} else {
+		system("curl http://localhost:5005/Salon/pause");
+	}
 
 	for(var i = 0; i < pLights.length; i++) {
 		MySwitchAllLightsTimer(i, pToggler, pLights);
